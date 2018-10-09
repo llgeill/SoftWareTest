@@ -13,11 +13,12 @@ import java.util.logging.Logger;
  */
 public class FourArithmeticOperation {
     private static Logger logger=Logger.getLogger("FourArithmeticOperation");
+    private static int count;
 
     public static void main(String[] args) {
         FourArithmeticOperation fourArithmeticOperation=new FourArithmeticOperation();
         List<String> resultList=new ArrayList<>();
-        int count=fourArithmeticOperation.readValue();
+        fourArithmeticOperation.readValue();
         fourArithmeticOperation.outPutData(count,resultList);
         String[] strings=fourArithmeticOperation.inputResult();
         fourArithmeticOperation.checkTest(strings,resultList);
@@ -27,8 +28,7 @@ public class FourArithmeticOperation {
      * 判断数据为整数并且大于0，否则递归调用直到输入正确整数
      * @return 输入数目
      */
-    public int readValue(){
-        int count=0;
+    public void readValue(){
         try {
             System.out.print("请输入你需要的算式个数：");
             Scanner scanner=new Scanner(System.in);
@@ -38,7 +38,6 @@ public class FourArithmeticOperation {
             logger.log(Level.WARNING,"数据输入错误，请输入整数并且大于0");
             readValue();
         }
-        return count;
     }
 
     /**
@@ -78,14 +77,14 @@ public class FourArithmeticOperation {
      * @param count
      */
     public void outPutData(int count,List<String> resultList){
-        String sign[]={"+","-","×","÷"};
+        String sign[]={"+","-","÷","×"};
         String finallyResult="";
         for(int i=0;i<count;i++){
             List<String> signList=new ArrayList();
             List<String> arithmeticValue=new ArrayList<>();
             //随机生成数量不等的运算符
             int signNumber=new Random().nextInt(2)+2;
-            for(int j=0;j<signNumber;j++){
+            for(int j=0;j<3;j++){
                 int signIndex=new Random().nextInt(4);
                 signList.add(sign[signIndex]);
             }
@@ -160,7 +159,7 @@ public class FourArithmeticOperation {
                 if(thisLevel>thatLevel){
                     signValue.push(signList.get(i));
                 }else{
-                    //出栈顺序与运算顺序相反
+                    //出栈顺序与运算顺序相反,除法需要分清楚
                     String oneStr=numberValue.pop();
                     String twoStr=numberValue.pop();
                     String resultStr=computeOptions(twoStr,oneStr,signValue.pop());
@@ -174,7 +173,7 @@ public class FourArithmeticOperation {
         while (!signValue.isEmpty()){
             String oneStr=numberValue.pop();
             String twoStr=numberValue.pop();
-            String resultStr=computeOptions(oneStr,twoStr,signValue.pop());
+            String resultStr=computeOptions(twoStr,oneStr,signValue.pop());
             numberValue.push(resultStr);
         }
         return numberValue.pop();
@@ -288,8 +287,8 @@ public class FourArithmeticOperation {
                     String twoMolecule=two.substring(1,two.indexOf("/"));
                     String twoDenominator=two.substring(two.indexOf("/")+1);
                     int totalMolecule=Integer.parseInt(twoDenominator)*Integer.parseInt(one);
-                    int totalDenominator=Integer.parseInt(twoDenominator);
-                    resultStr="#"+String.valueOf(totalMolecule)+"/"+twoDenominator;
+                    int totalDenominator=Integer.parseInt(twoMolecule);
+                    resultStr="#"+String.valueOf(totalMolecule)+"/"+totalDenominator;
                 }else {
                     resultStr="#"+one+"/"+two;
                 }
